@@ -9,3 +9,5 @@ springDependencyManagementPlugin = { id = "io.spring.dependency-management", ver
 spotlessPlugin = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 
 [libraries]
+springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web" }
+lombok = { module = "org.projectlombok:lombok" }

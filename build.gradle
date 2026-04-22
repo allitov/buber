@@ -56,7 +56,12 @@ subprojects {
     installGitHooks()
 
     dependencies {
+        implementation libs.lombok
+        annotationProcessor libs.lombok
+        testImplementation libs.lombok
+        testAnnotationProcessor libs.lombok
 
+        implementation libs.springBootStarterWeb
     }
 
     test {
