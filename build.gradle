@@ -2,6 +2,7 @@ plugins {
     id 'java'
     alias(libs.plugins.springBootPlugin) apply false
     alias(libs.plugins.springDependencyManagementPlugin) apply false
+    alias(libs.plugins.spotlessPlugin) apply false
 }
 
 allprojects {
@@ -17,6 +18,7 @@ subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'org.springframework.boot'
+    apply plugin: 'com.diffplug.spotless'
 
     java {
         sourceCompatibility = JavaVersion.VERSION_25
@@ -25,6 +27,33 @@ subprojects {
     tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
     }
+
+    spotless {
+        java {
+            target 'src/**/*.java'
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+            palantirJavaFormat("2.86.0")
+        }
+    }
+
+    def installGitHooks = {
+        def gitDir = file("${rootDir}/.git")
+        if (gitDir.exists()) {
+            copy {
+                from "${rootDir}/git/hooks"
+                into "${gitDir.path}/hooks"
+                filePermissions {
+                    user { read = true; write = true; execute = true }
+                    group { read = true; execute = true }
+                    other { read = true; execute = true }
+                }
+            }
+            println "Git hooks installed during project evaluation."
+        }
+    }
+    installGitHooks()
 
     dependencies {
 
