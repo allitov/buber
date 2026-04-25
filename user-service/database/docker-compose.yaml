@@ -1,0 +1,41 @@
+name: user-service-db
+
+services:
+  postgres:
+    container_name: users-db
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: user_service
+      POSTGRES_USER: user_service
+      POSTGRES_DB: user_service
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user_service -d user_service" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - user-service-local
+
+  flyway:
+    container_name: users-flyway
+    image: flyway/flyway:12
+    command: [ "-connectRetries=60", "migrate" ]
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/user_service
+      FLYWAY_USER: user_service
+      FLYWAY_PASSWORD: user_service
+      FLYWAY_SCHEMAS: user_service
+      FLYWAY_LOCATION: filesystem:/flyway/sql/main
+    volumes:
+      - ./migrations:/flyway/sql/main
+    depends_on:
+      - postgres
+    networks:
+      - user-service-local
+
+networks:
+  user-service-local:
