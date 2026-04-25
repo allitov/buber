@@ -21,7 +21,7 @@ paths:
               $ref: '#/components/schemas/PassengerRequest'
       responses:
         201:
-          description: Пользователь успешно создан.
+          description: Пассажир успешно зарегистрирован.
           content:
             application/json:
               schema:
@@ -29,7 +29,7 @@ paths:
                   id:
                     type: integer
                     format: int64
-                    description: Уникальный идентификатор созданного пассажира.
+                    description: Уникальный идентификатор зарегистрированного пассажира.
         400:
           description: Некорректные значения параметров.
           content:
@@ -50,7 +50,7 @@ paths:
           schema:
             type: integer
             format: int64
-          description: Уникальный идентификатор пользователя.
+          description: Уникальный идентификатор пассажира.
       responses:
         200:
           description: Информация успешно найдена.
@@ -70,6 +70,107 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+
+  /drivers:
+    post:
+      tags:
+        - Водители
+      summary: Зарегистрировать водителя в системе.
+      operationId: createDriver
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverRequest'
+      responses:
+        201:
+          description: Водитель успешно зарегистрирован.
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: integer
+                    format: int64
+                    description: Уникальный идентификатор зарегистрированного водителя.
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /drivers/{driverId}:
+    get:
+      tags:
+        - Водители
+      summary: Получить информацию о водителе по уникальному идентификатору.
+      operationId: getDriver
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Уникальный идентификатор водителя.
+      responses:
+        200:
+          description: Информация успешно найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverResponse'
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /drivers/{driverId}/status:
+    patch:
+      tags:
+        - Водители
+      summary: Обновить статус водителя по уникальному идентификатору.
+      operationId: updateDriverStatus
+      parameters:
+        - name: driverId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Уникальный идентификатор водителя.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriverChangeStatusRequest'
+      responses:
+        204:
+          description: Статус водителя обновлен.
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
 components:
   schemas:
     PassengerResponse:
@@ -89,6 +190,10 @@ components:
         phone:
           type: string
           description: Номер телефона пассажира.
+        registeredAt:
+          type: string
+          format: date-time
+          description: Дата регистрации пассажира.
 
     PassengerRequest:
       type: object
@@ -110,6 +215,70 @@ components:
           minLength: 1
           maxLength: 20
           description: Номер телефона пассажира.
+
+    DriverRequest:
+      type: object
+      description: Данные о водителе для регистрации.
+      required: [name, phone, licenseNumber]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: ФИО водителя.
+        email:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Электронная почта водителя.
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 20
+          description: Номер телефона водителя.
+        licenseNumber:
+          type: string
+          minLength: 1
+          maxLength: 50
+          description: Номер лицензии водителя.
+
+    DriverResponse:
+      type: object
+      description: Информация о водителе.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор водителя.
+        name:
+          type: string
+          description: ФИО водителя.
+        email:
+          type: string
+          description: Электронная почта водителя.
+        phone:
+          type: string
+          description: Номер телефона водителя.
+        licenseNumber:
+          type: string
+          description: Номер лицензии водителя.
+        status:
+          type: string
+          description: Текущий статус водителя.
+        registeredAt:
+          type: string
+          format: date-time
+          description: Дата регистрации водителя.
+
+    DriverChangeStatusRequest:
+      type: object
+      description: Данные о новом статусе водителя.
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [AVAILABLE, BUSY, OFFLINE]
+          description: Новый статус водителя.
 
     Error:
       type: object
