@@ -2,6 +2,7 @@
 springBootVersion = "4.0.5"
 springDependencyManagementVersion = "1.1.7"
 spotlessVersion = "8.2.1"
+jdbiVersion = "3.52.1"
 
 [plugins]
 springBootPlugin = { id = "org.springframework.boot", version.ref = "springBootVersion" }
@@ -9,5 +10,17 @@ springDependencyManagementPlugin = { id = "io.spring.dependency-management", ver
 spotlessPlugin = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 
 [libraries]
-springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web" }
+# dev
 lombok = { module = "org.projectlombok:lombok" }
+
+# web
+springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web" }
+springBootStarterValidation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+
+# data base
+springBootStarterJdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc" }
+postgreSQL = { module = "org.postgresql:postgresql" }
+jdbiCore = { module = "org.jdbi:jdbi3-core", version.ref = "jdbiVersion" }
+jdbiSqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbiVersion" }
+jdbiPostgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbiVersion" }
+jdbiSpring = { module = "org.jdbi:jdbi3-spring5", version.ref = "jdbiVersion" }
