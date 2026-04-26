@@ -5,6 +5,7 @@ import io.allitov.buber.core.exception.EntityNotFoundException;
 import io.allitov.buber.core.model.Passenger;
 import io.allitov.buber.core.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -23,6 +24,7 @@ public class PassengerService {
      * @return {@link Passenger}.
      * @throws EntityNotFoundException если пассажир не был найден.
      */
+    @Cacheable(value = "passenger", key = "#id")
     public Passenger getPassengerById(Long id) {
         return passengerRepository
                 .findById(id)

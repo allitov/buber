@@ -14,3 +14,15 @@ spring:
       connection-timeout: 5000
       idle-timeout: 60000
       validation-timeout: 500
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+
+app:
+  cache:
+    default-ttl: 60m
+    config:
+      passengers: 30s
+      drivers: 30s

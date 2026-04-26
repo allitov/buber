@@ -6,6 +6,8 @@ import io.allitov.buber.core.model.Driver;
 import io.allitov.buber.core.model.DriverStatus;
 import io.allitov.buber.core.repository.DriverRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,6 +26,7 @@ public class DriverService {
      * @return {@link Driver}.
      * @throws EntityNotFoundException если водитель не был найден.
      */
+    @Cacheable(value = "drivers", key = "#id")
     public Driver getDriverById(Long id) {
         return driverRepository
                 .findById(id)
@@ -54,6 +57,7 @@ public class DriverService {
      * @param id        уникальный идентификатор водителя.
      * @param newStatus новый статус водителя.
      */
+    @CacheEvict(value = "drivers", key = "#id")
     public void updateDriverStatus(Long id, DriverStatus newStatus) {
         driverRepository.updateStatusById(id, newStatus);
     }

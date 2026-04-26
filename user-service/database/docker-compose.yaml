@@ -37,5 +37,19 @@ services:
     networks:
       - user-service-local
 
+  redis:
+    container_name: user-redis
+    image: redis:8.6
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - user-service-local
+
 networks:
   user-service-local:
