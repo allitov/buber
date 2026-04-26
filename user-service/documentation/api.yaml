@@ -7,7 +7,7 @@ servers:
   - url: http://localhost:8080
     description: локальный сервер
 paths:
-  /passengers:
+  /api/v1/passengers:
     post:
       tags:
         - Пассажиры
@@ -22,14 +22,12 @@ paths:
       responses:
         201:
           description: Пассажир успешно зарегистрирован.
-          content:
-            application/json:
+          headers:
+            Location:
+              description: Ссылка на созданный ресурс пассажира.
               schema:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                    description: Уникальный идентификатор зарегистрированного пассажира.
+                type: string
+                format: uri
         400:
           description: Некорректные значения параметров.
           content:
@@ -37,7 +35,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /passengers/{passengerId}:
+  /api/v1/passengers/{passengerId}:
     get:
       tags:
         - Пассажиры
@@ -71,7 +69,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /drivers:
+  /api/v1/drivers:
     post:
       tags:
         - Водители
@@ -86,14 +84,12 @@ paths:
       responses:
         201:
           description: Водитель успешно зарегистрирован.
-          content:
-            application/json:
+          headers:
+            Location:
+              description: Ссылка на созданный ресурс водителя.
               schema:
-                properties:
-                  id:
-                    type: integer
-                    format: int64
-                    description: Уникальный идентификатор зарегистрированного водителя.
+                type: string
+                format: uri
         400:
           description: Некорректные значения параметров.
           content:
@@ -101,7 +97,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /drivers/{driverId}:
+  /api/v1/drivers/{driverId}:
     get:
       tags:
         - Водители
@@ -135,7 +131,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
 
-  /drivers/{driverId}/status:
+  /api/v1/drivers/{driverId}/status:
     patch:
       tags:
         - Водители

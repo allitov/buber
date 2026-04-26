@@ -4,7 +4,7 @@ import io.allitov.buber.core.model.Passenger;
 import java.util.Optional;
 import org.jdbi.v3.sqlobject.config.RegisterConstructorMapper;
 import org.jdbi.v3.sqlobject.customizer.Bind;
-import org.jdbi.v3.sqlobject.customizer.BindBean;
+import org.jdbi.v3.sqlobject.customizer.BindMethods;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
@@ -32,5 +32,14 @@ public interface PassengerRepository {
      */
     @SqlUpdate("insert into passenger (name, email, phone) values (:name, :email, :phone);")
     @GetGeneratedKeys
-    Long save(@BindBean Passenger passenger);
+    Long save(@BindMethods Passenger passenger);
+
+    /**
+     * Проверить существование записи по номеру телефона.
+     *
+     * @param phone номер телефона, по которому осуществляется поиск.
+     * @return {@code true} - если запись найдена; иначе {@code false}.
+     */
+    @SqlQuery("select exists(select 1 from passenger where phone = :phone);")
+    boolean existsByPhone(@Bind("phone") String phone);
 }

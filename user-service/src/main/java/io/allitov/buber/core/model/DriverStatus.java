@@ -21,7 +21,7 @@ public enum DriverStatus {
     BUSY("busy"),
 
     /**
-     * Водитель не в сети.
+     * Водитель не в сети или не готов принимать заказы.
      */
     OFFLINE("offline");
 

@@ -3,6 +3,7 @@ springBootVersion = "4.0.5"
 springDependencyManagementVersion = "1.1.7"
 spotlessVersion = "8.2.1"
 jdbiVersion = "3.52.1"
+mapstructVersion = "1.6.3"
 
 [plugins]
 springBootPlugin = { id = "org.springframework.boot", version.ref = "springBootVersion" }
@@ -24,3 +25,7 @@ jdbiCore = { module = "org.jdbi:jdbi3-core", version.ref = "jdbiVersion" }
 jdbiSqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbiVersion" }
 jdbiPostgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbiVersion" }
 jdbiSpring = { module = "org.jdbi:jdbi3-spring5", version.ref = "jdbiVersion" }
+
+# mapping
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstructVersion" }
+mapstrcutProcessor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstructVersion" }

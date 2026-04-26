@@ -12,4 +12,8 @@ dependencies {
     // web
     implementation libs.springBootStarterWeb
     implementation libs.springBootStarterValidation
+
+    // mapping
+    implementation libs.mapstruct
+    annotationProcessor libs.mapstrcutProcessor
 }

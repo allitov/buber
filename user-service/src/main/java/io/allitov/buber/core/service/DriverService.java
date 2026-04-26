@@ -1,5 +1,6 @@
 package io.allitov.buber.core.service;
 
+import io.allitov.buber.core.exception.AlreadyExistsException;
 import io.allitov.buber.core.exception.EntityNotFoundException;
 import io.allitov.buber.core.model.Driver;
 import io.allitov.buber.core.model.DriverStatus;
@@ -34,9 +35,17 @@ public class DriverService {
      *
      * @param driver информация, которую нужно сохранить.
      * @return уникальный идентификатор сохраненного водителя.
+     * @throws AlreadyExistsException если номер телефона или номер лицензии водителя уже записаны в системе.
      */
     public Long saveDriver(Driver driver) {
-        return driverRepository.save(driver);
+        if (driverRepository.existsByPhoneOrLicenseNumber(driver.phone(), driver.licenseNumber())) {
+            throw new AlreadyExistsException("Driver with phone='%s' or license number='%s' already exists."
+                    .formatted(driver.name(), driver.licenseNumber()));
+        }
+
+        Driver driverToSave = driver.toBuilder().status(DriverStatus.OFFLINE).build();
+
+        return driverRepository.save(driverToSave);
     }
 
     /**
@@ -45,7 +54,7 @@ public class DriverService {
      * @param id        уникальный идентификатор водителя.
      * @param newStatus новый статус водителя.
      */
-    public void changeDriverStatusById(Long id, DriverStatus newStatus) {
+    public void updateDriverStatus(Long id, DriverStatus newStatus) {
         driverRepository.updateStatusById(id, newStatus);
     }
 }

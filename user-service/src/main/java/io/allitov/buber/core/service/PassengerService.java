@@ -1,5 +1,6 @@
 package io.allitov.buber.core.service;
 
+import io.allitov.buber.core.exception.AlreadyExistsException;
 import io.allitov.buber.core.exception.EntityNotFoundException;
 import io.allitov.buber.core.model.Passenger;
 import io.allitov.buber.core.repository.PassengerRepository;
@@ -17,6 +18,7 @@ public class PassengerService {
 
     /**
      * Получить информацию о пассажире по уникальному идентификатору.
+     *
      * @param id уникальный идентификатор, по которому осуществляется поиск.
      * @return {@link Passenger}.
      * @throws EntityNotFoundException если пассажир не был найден.
@@ -29,10 +31,16 @@ public class PassengerService {
 
     /**
      * Сохранить информацию о пассажире.
+     *
      * @param passenger информация, которую нужно сохранить.
      * @return уникальный идентификатор сохраненного пассажира.
+     * @throws AlreadyExistsException если номер телефона пассажира уже записан в системе.
      */
     public Long savePassenger(Passenger passenger) {
+        if (passengerRepository.existsByPhone(passenger.phone())) {
+            throw new AlreadyExistsException("Passenger with phone='%s' already exists.".formatted(passenger.phone()));
+        }
+
         return passengerRepository.save(passenger);
     }
 }
