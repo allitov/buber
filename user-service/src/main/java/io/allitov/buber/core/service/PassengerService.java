@@ -7,6 +7,8 @@ import io.allitov.buber.core.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Сервисный класс для работы со сущностью {@link Passenger}.
@@ -24,7 +26,7 @@ public class PassengerService {
      * @return {@link Passenger}.
      * @throws EntityNotFoundException если пассажир не был найден.
      */
-    @Cacheable(value = "passenger", key = "#id")
+    @Cacheable(value = "passengers", key = "#id")
     public Passenger getPassengerById(Long id) {
         return passengerRepository
                 .findById(id)
@@ -38,6 +40,7 @@ public class PassengerService {
      * @return уникальный идентификатор сохраненного пассажира.
      * @throws AlreadyExistsException если номер телефона пассажира уже записан в системе.
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Long savePassenger(Passenger passenger) {
         if (passengerRepository.existsByPhone(passenger.phone())) {
             throw new AlreadyExistsException("Passenger with phone='%s' already exists.".formatted(passenger.phone()));

@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Сервисный класс для работы со сущностью {@link Driver}.
@@ -40,6 +42,7 @@ public class DriverService {
      * @return уникальный идентификатор сохраненного водителя.
      * @throws AlreadyExistsException если номер телефона или номер лицензии водителя уже записаны в системе.
      */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Long saveDriver(Driver driver) {
         if (driverRepository.existsByPhoneOrLicenseNumber(driver.phone(), driver.licenseNumber())) {
             throw new AlreadyExistsException("Driver with phone='%s' or license number='%s' already exists."
