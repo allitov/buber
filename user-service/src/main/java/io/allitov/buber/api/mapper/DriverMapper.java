@@ -6,6 +6,9 @@ import io.allitov.buber.core.model.Driver;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * Маппер для сущности {@link Driver}.
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface DriverMapper {
 
