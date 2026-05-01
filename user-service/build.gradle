@@ -22,4 +22,7 @@ dependencies {
 
     // cache
     implementation libs.springBootStarterRedis
+
+    // messaging
+    implementation libs.springBootStarterKafka
 }

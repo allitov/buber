@@ -1,0 +1,56 @@
+asyncapi: 3.0.0
+info:
+  title: Kafka User Service
+  description: Протокол сообщений для Kafka в User Service.
+  version: 1.0.0
+
+servers:
+  kafkaDevelop:
+    host: localhost:9092
+    description: стенд для разработки.
+    protocol: kafka
+
+channels:
+  driver-status-events:
+    title: driver-status-events
+    address: driver-status-events
+    description: Топик для отправки информации о доступности водителя в Trip Service.
+    messages:
+      DriverAvailableEvent:
+        $ref: '#/components/messages/DriverAvailableEvent'
+    servers:
+      - $ref: '#/servers/kafkaDevelop'
+
+operations:
+  sendDriverAvailable:
+    action: send
+    channel:
+      $ref: '#/channels/driver-status-events'
+    summary: Отправка уведомления о том, что водитель стал доступен.
+
+components:
+  messages:
+    DriverAvailableEvent:
+      name: DriverAvailableEvent
+      description: Информация по доступному водителю.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DriverAvaiableEvent'
+
+  schemas:
+    DriverAvaiableEvent:
+      type: object
+      description: DTO для отправки информации по доступному водителю.
+      properties:
+        driverId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор водителя.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Время смены статуса водителя.
+      required:
+        - driverId
+        - updatedAt
+

@@ -34,6 +34,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/v1/passengers/{passengerId}:
     get:
@@ -68,6 +74,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/v1/drivers:
     post:
@@ -92,6 +104,12 @@ paths:
                 format: uri
         400:
           description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
           content:
             application/json:
               schema:
@@ -130,6 +148,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 
   /api/v1/drivers/{driverId}/status:
     patch:
@@ -162,6 +186,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         404:
           description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
           content:
             application/json:
               schema:

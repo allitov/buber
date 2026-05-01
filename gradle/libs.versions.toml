@@ -34,3 +34,6 @@ mapstrcutProcessor = { module = "org.mapstruct:mapstruct-processor", version.ref
 
 # cache
 springBootStarterRedis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+
+# messaging
+springBootStarterKafka = { module = "org.springframework.boot:spring-boot-starter-kafka" }

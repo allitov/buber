@@ -23,7 +23,7 @@ public class ControllerLoggingAspect {
     public void controllerPointcut() {}
 
     /**
-     * Логирование выполнение метода: запрос, время выполнения и ответ.
+     * Логирование выполнения метода: запрос, время выполнения и ответ.
      */
     @Around("controllerPointcut()")
     public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
