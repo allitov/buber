@@ -1,0 +1,38 @@
+server:
+  address: 127.0.0.1
+  port: 8080
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/user_service
+    username: user_service
+    password: user_service
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
+      connection-timeout: 5000
+      idle-timeout: 60000
+      validation-timeout: 500
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  kafka:
+    bootstrap-servers: localhost:9092
+
+logging:
+  level:
+    root: INFO
+    io.allitov.buber: DEBUG
+
+app:
+  cache:
+    default-ttl: 60m
+    config:
+      passengers: 30s
+      drivers: 30s
+  event:
+    topic:
+      driver-status-events: "driver-status-events"

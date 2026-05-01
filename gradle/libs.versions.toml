@@ -2,6 +2,9 @@
 springBootVersion = "4.0.5"
 springDependencyManagementVersion = "1.1.7"
 spotlessVersion = "8.2.1"
+jdbiVersion = "3.52.1"
+mapstructVersion = "1.6.3"
+springBootStarterAopVersion = "3.5.14"
 
 [plugins]
 springBootPlugin = { id = "org.springframework.boot", version.ref = "springBootVersion" }
@@ -9,3 +12,28 @@ springDependencyManagementPlugin = { id = "io.spring.dependency-management", ver
 spotlessPlugin = { id = "com.diffplug.spotless", version.ref = "spotlessVersion" }
 
 [libraries]
+# dev
+lombok = { module = "org.projectlombok:lombok" }
+springBootStarterAop = { module = "org.springframework.boot:spring-boot-starter-aop", version.ref = "springBootStarterAopVersion" }
+
+# web
+springBootStarterWeb = { module = "org.springframework.boot:spring-boot-starter-web" }
+springBootStarterValidation = { module = "org.springframework.boot:spring-boot-starter-validation" }
+
+# data base
+springBootStarterJdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc" }
+postgreSQL = { module = "org.postgresql:postgresql" }
+jdbiCore = { module = "org.jdbi:jdbi3-core", version.ref = "jdbiVersion" }
+jdbiSqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbiVersion" }
+jdbiPostgres = { module = "org.jdbi:jdbi3-postgres", version.ref = "jdbiVersion" }
+jdbiSpring = { module = "org.jdbi:jdbi3-spring5", version.ref = "jdbiVersion" }
+
+# mapping
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstructVersion" }
+mapstrcutProcessor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstructVersion" }
+
+# cache
+springBootStarterRedis = { module = "org.springframework.boot:spring-boot-starter-data-redis" }
+
+# messaging
+springBootStarterKafka = { module = "org.springframework.boot:spring-boot-starter-kafka" }
