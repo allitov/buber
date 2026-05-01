@@ -1,2 +1,3 @@
 rootProject.name = 'buber-project'
 include 'user-service'
+include 'trip-service'
