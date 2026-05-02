@@ -1,0 +1,37 @@
+server:
+  address: 127.0.0.1
+  port: 8081
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/trip_service
+    username: trip_service
+    password: trip_service
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 1
+      connection-timeout: 5000
+      idle-timeout: 60000
+      validation-timeout: 500
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 1
+
+logging:
+  level:
+    root: INFO
+    io.allitov.buber.trip: DEBUG
+
+app:
+  cache:
+    default-ttl: 60m
+    config:
+      trips: 30s
+
+client:
+  user-service:
+    host: 127.0.0.1
+    port: 8080
