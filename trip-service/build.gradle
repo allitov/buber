@@ -1,0 +1,11 @@
+dependencies {
+    // data base
+    implementation libs.springBootStarterJdbc
+
+    runtimeOnly libs.postgreSQL
+
+    implementation libs.jdbiCore
+    implementation libs.jdbiSqlobject
+    implementation libs.jdbiSpring
+    implementation libs.jdbiPostgres
+}
