@@ -1,0 +1,244 @@
+openapi: 3.1.0
+info:
+  title: Trip Service API
+  description: Сервис по управлению поездками и назначению водителей.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8081
+    description: локальный сервер
+paths:
+  /api/v1/trips:
+    post:
+      tags:
+        - Поездки
+      summary: Создать новый заказ на поездку.
+      operationId: createTrip
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripRequest'
+      responses:
+        201:
+          description: Заказ на поездку успешно создан.
+          headers:
+            Location:
+              description: Ссылка на созданный ресурс поездки.
+              schema:
+                type: string
+                format: uri
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Поездки
+      summary: Получить историю поездок пассажира.
+      parameters:
+        - name: passengerId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Уникальный идентификатор пассажира.
+      responses:
+        200:
+          description: Информация успешно найдена.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TripResponse'
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/trips/{tripId}:
+    get:
+      tags:
+        - Поездки
+      summary: Получить информацию о конкретной поездке.
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Информация успешно найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/trips/{tripId}/status:
+    patch:
+      tags:
+        - Поездки
+      summary: Обновить статус поездки.
+      parameters:
+        - name: tripId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Уникальный идентификатор поездки.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripStatusUpdateRequest'
+      responses:
+        204:
+          description: Статус успешно обновлен.
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: Информация не найдена.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    TripRequest:
+      type: object
+      required: [passengerId, origin, destination]
+      description: Данные о поездке для регистрации.
+      properties:
+        passengerId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор пассажира.
+        origin:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Адрес отправления.
+        destination:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Адрес назначения.
+
+    TripResponse:
+      type: object
+      description: Информация о поездке.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
+        passengerId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор пассажира.
+        driverId:
+          type: [integer, "null"]
+          format: int64
+          description: Уникальный идентификатор водителя.
+        status:
+          type: string
+          enum: [CREATED, ACCEPTED, STARTED, COMPLETED, CANCELLED]
+          description: Текущий статус поездки.
+        origin:
+          type: string
+          description: Адрес отправления.
+        destination:
+          type: string
+          description: Адрес назначения.
+        price:
+          type: integer
+          format: int64
+          description: Стоимость поездки в копейках.
+        createdAt:
+          type: string
+          format: date-time
+          description: Время создания записи.
+        updatedAt:
+          type: string
+          format: date-time
+          description: Время последнего обновления записи.
+
+    TripStatusUpdateRequest:
+      type: object
+      description: Данные о новом статусе поездки.
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ACCEPTED, STARTED, COMPLETED, CANCELLED]
+          description: Новый статус поездки.
+
+    Error:
+      type: object
+      description: Сущность с описанием ошибки.
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Код ошибки.
+        message:
+          type: string
+          description: Информация об ошибке.

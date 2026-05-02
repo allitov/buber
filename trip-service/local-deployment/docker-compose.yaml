@@ -1,0 +1,55 @@
+name: trip-service
+
+services:
+  postgres:
+    container_name: trip-db
+    image: postgres:16
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: trip_service
+      POSTGRES_USER: trip_service
+      POSTGRES_DB: trip_service
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user_service -d user_service" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+    networks:
+      - trips-service-local
+
+  flyway:
+    container_name: trip-flyway
+    image: flyway/flyway:12
+    command: [ "-connectRetries=60", "migrate" ]
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/trip_service
+      FLYWAY_USER: trip_service
+      FLYWAY_PASSWORD: trip_service
+      FLYWAY_SCHEMAS: trip_service
+      FLYWAY_LOCATION: filesystem:/flyway/sql/main
+    volumes:
+      - ../database/migrations:/flyway/sql/main
+    depends_on:
+      - postgres
+    networks:
+      - trips-service-local
+
+  redis:
+    container_name: trip-redis
+    image: redis:8.6
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - trips-service-local
+
+networks:
+  trips-service-local:
