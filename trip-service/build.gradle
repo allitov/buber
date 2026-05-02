@@ -19,4 +19,7 @@ dependencies {
     // mapping
     implementation libs.mapstruct
     annotationProcessor libs.mapstrcutProcessor
+
+    // cache
+    implementation libs.springBootStarterRedis
 }

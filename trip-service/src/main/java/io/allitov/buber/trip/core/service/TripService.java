@@ -7,6 +7,8 @@ import io.allitov.buber.trip.core.repository.TripRepository;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 /**
@@ -25,6 +27,7 @@ public class TripService {
      * @return информация о найденной поездке.
      * @throws EntityNotFoundException если поездка не была найдена.
      */
+    @Cacheable(value = "trips", key = "#tripId")
     public Trip getTripById(Long tripId) {
         return tripRepository
                 .findById(tripId)
@@ -43,9 +46,10 @@ public class TripService {
         // Однако для этого видится разработка еще одного сервиса.
         long randomPrice = ThreadLocalRandom.current().nextLong(10000, 100000);
 
-        trip.toBuilder().status(TripStatus.CREATED).price(randomPrice).build();
+        Trip tripToSave =
+                trip.toBuilder().status(TripStatus.CREATED).price(randomPrice).build();
 
-        return tripRepository.save(trip);
+        return tripRepository.save(tripToSave);
     }
 
     /**
@@ -64,6 +68,7 @@ public class TripService {
      * @param tripId    уникальный идентификатор поездки.
      * @param newStatus новый статус поездки.
      */
+    @CacheEvict(value = "trips", key = "#tripId")
     public void updateTripStatus(Long tripId, TripStatus newStatus) {
         tripRepository.updateStatusById(tripId, newStatus);
     }
