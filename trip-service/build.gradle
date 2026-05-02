@@ -1,3 +1,7 @@
+ext {
+    springCloudVersion = "2025.1.1"
+}
+
 dependencies {
     // dev
     implementation libs.springBootStarterAop
@@ -22,4 +26,13 @@ dependencies {
 
     // cache
     implementation libs.springBootStarterRedis
+
+    // cloud
+    implementation libs.springCloudStarterOpenFeign
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+    }
 }

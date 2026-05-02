@@ -37,3 +37,6 @@ springBootStarterRedis = { module = "org.springframework.boot:spring-boot-starte
 
 # messaging
 springBootStarterKafka = { module = "org.springframework.boot:spring-boot-starter-kafka" }
+
+# cloud
+springCloudStarterOpenFeign = { module = "org.springframework.cloud:spring-cloud-starter-openfeign" }

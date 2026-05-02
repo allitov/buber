@@ -30,3 +30,8 @@ app:
     default-ttl: 60m
     config:
       trips: 30s
+
+client:
+  user-service:
+    host: 127.0.0.1
+    port: 8080

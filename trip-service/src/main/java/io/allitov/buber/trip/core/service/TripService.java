@@ -1,5 +1,6 @@
 package io.allitov.buber.trip.core.service;
 
+import io.allitov.buber.trip.client.UserServiceClient;
 import io.allitov.buber.trip.core.exception.EntityNotFoundException;
 import io.allitov.buber.trip.core.model.Trip;
 import io.allitov.buber.trip.core.model.TripStatus;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 public class TripService {
 
     private final TripRepository tripRepository;
+
+    private final UserServiceClient userServiceClient;
 
     /**
      * Получить информацию о поездке по уникальному идентификатору.
@@ -41,6 +44,8 @@ public class TripService {
      * @return уникальный идентификатор сохраненной поездки.
      */
     public Long saveTrip(Trip trip) {
+        userServiceClient.isPassengerExists(trip.passengerId());
+
         // Для простоты считаем стоимость поездки рандомно.
         // По-хорошему нужно вычислять расстояние от одной точки до другой и умножать на коэффициент.
         // Однако для этого видится разработка еще одного сервиса.
