@@ -1,6 +1,7 @@
 package io.allitov.buber.trip.core.model;
 
 import java.time.Instant;
+import lombok.Builder;
 
 /**
  * Сущность, содержащая информацию о поездке.
@@ -15,6 +16,7 @@ import java.time.Instant;
  * @param createdAt   Время создания записи.
  * @param updatedAt   Время последнего обновления записи.
  */
+@Builder(toBuilder = true)
 public record Trip(
         Long id,
         Long passengerId,
