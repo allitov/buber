@@ -8,4 +8,12 @@ dependencies {
     implementation libs.jdbiSqlobject
     implementation libs.jdbiSpring
     implementation libs.jdbiPostgres
+
+    // web
+    implementation libs.springBootStarterWeb
+    implementation libs.springBootStarterValidation
+
+    // mapping
+    implementation libs.mapstruct
+    annotationProcessor libs.mapstrcutProcessor
 }
