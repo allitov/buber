@@ -3,13 +3,11 @@ info:
   title: Kafka User Service
   description: Протокол сообщений для Kafka в User Service.
   version: 1.0.0
-
 servers:
   kafkaDevelop:
     host: localhost:9092
     description: стенд для разработки.
     protocol: kafka
-
 channels:
   driver-status-events:
     title: driver-status-events
@@ -20,14 +18,12 @@ channels:
         $ref: '#/components/messages/DriverAvailableEvent'
     servers:
       - $ref: '#/servers/kafkaDevelop'
-
 operations:
   sendDriverAvailable:
     action: send
     channel:
       $ref: '#/channels/driver-status-events'
     summary: Отправка уведомления о том, что водитель стал доступен.
-
 components:
   messages:
     DriverAvailableEvent:
@@ -36,12 +32,19 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/DriverAvaiableEvent'
-
   schemas:
     DriverAvaiableEvent:
       type: object
       description: DTO для отправки информации по доступному водителю.
       properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события.
+        timestamp:
+          type: string
+          format: date-time
+          description: Время создания события.
         driverId:
           type: integer
           format: int64

@@ -1,7 +1,9 @@
 package io.allitov.buber.trip.core.service;
 
-import io.allitov.buber.trip.api.event.TripCreatedEvent;
+import io.allitov.buber.common.event.TripCreatedEvent;
 import io.allitov.buber.trip.core.model.Trip;
+import java.time.Instant;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,8 @@ public class TripEventSender {
      */
     public void sendTripCreatedEvent(Trip createdTrip) {
         TripCreatedEvent event = TripCreatedEvent.builder()
+                .eventId(UUID.randomUUID())
+                .timestamp(Instant.now())
                 .tripId(createdTrip.id())
                 .passengerId(createdTrip.passengerId())
                 .origin(createdTrip.origin())
@@ -35,7 +39,7 @@ public class TripEventSender {
                 .price(createdTrip.price())
                 .build();
 
-        kafkaTemplate.send(tripCreatedTopic, createdTrip.id().toString(), event);
+        kafkaTemplate.send(tripCreatedTopic, event.routingKey(), event);
 
         log.info("Sent TripCreatedEvent for tripId='{}' in topic='{}'.", createdTrip.id(), tripCreatedTopic);
     }

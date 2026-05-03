@@ -1,6 +1,6 @@
 package io.allitov.buber.trip.configuration.event;
 
-import io.allitov.buber.trip.api.event.TripCreatedEvent;
+import io.allitov.buber.common.event.TripCreatedEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;

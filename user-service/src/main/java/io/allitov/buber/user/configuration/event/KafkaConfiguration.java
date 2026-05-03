@@ -1,6 +1,6 @@
 package io.allitov.buber.user.configuration.event;
 
-import io.allitov.buber.user.core.event.DriverAvailableEvent;
+import io.allitov.buber.common.event.DriverAvailableEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;

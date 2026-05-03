@@ -1,12 +1,13 @@
 package io.allitov.buber.user.core.service;
 
-import io.allitov.buber.user.core.event.DriverAvailableEvent;
+import io.allitov.buber.common.event.DriverAvailableEvent;
 import io.allitov.buber.user.core.exception.AlreadyExistsException;
 import io.allitov.buber.user.core.exception.EntityNotFoundException;
 import io.allitov.buber.user.core.model.Driver;
 import io.allitov.buber.user.core.model.DriverStatus;
 import io.allitov.buber.user.core.repository.DriverRepository;
 import java.time.Instant;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -74,9 +75,15 @@ public class DriverService {
     @CacheEvict(value = "drivers", key = "#id")
     public void updateDriverStatus(Long id, DriverStatus newStatus) {
         driverRepository.updateStatusById(id, newStatus);
+        DriverAvailableEvent event = DriverAvailableEvent.builder()
+                .eventId(UUID.randomUUID())
+                .timestamp(Instant.now())
+                .driverId(id)
+                .updatedAt(Instant.now())
+                .build();
 
         if (newStatus == DriverStatus.AVAILABLE) {
-            kafkaTemplate.send(driverStatusTopic, id.toString(), new DriverAvailableEvent(id, Instant.now()));
+            kafkaTemplate.send(driverStatusTopic, event.routingKey(), event);
         }
     }
 }

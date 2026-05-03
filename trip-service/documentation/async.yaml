@@ -37,6 +37,14 @@ components:
       type: object
       description: DTO для отправки информации по созданной заявке на поездку.
       properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события.
+        timestamp:
+          type: string
+          format: date-time
+          description: Время создания события.
         tripId:
           type: integer
           format: int64
