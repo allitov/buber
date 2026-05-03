@@ -44,3 +44,4 @@ app:
   event:
     topic:
       driver-status-events: "driver-status-events"
+      trip-created-events: "trip-created-events"
