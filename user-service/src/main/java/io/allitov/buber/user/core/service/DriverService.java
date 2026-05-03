@@ -1,5 +1,6 @@
 package io.allitov.buber.user.core.service;
 
+import io.allitov.buber.common.event.DomainEvent;
 import io.allitov.buber.common.event.DriverAvailableEvent;
 import io.allitov.buber.user.core.exception.AlreadyExistsException;
 import io.allitov.buber.user.core.exception.EntityNotFoundException;
@@ -26,7 +27,7 @@ public class DriverService {
 
     private final DriverRepository driverRepository;
 
-    private final KafkaTemplate<String, DriverAvailableEvent> kafkaTemplate;
+    private final KafkaTemplate<String, DomainEvent> kafkaTemplate;
 
     @Value("${app.event.topic.driver-status-events}")
     private String driverStatusTopic;

@@ -1,6 +1,6 @@
 package io.allitov.buber.trip.configuration.event;
 
-import io.allitov.buber.common.event.TripCreatedEvent;
+import io.allitov.buber.common.event.DomainEvent;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -24,18 +24,20 @@ class KafkaConfiguration {
     private String bootstrapServers;
 
     @Bean
-    ProducerFactory<String, TripCreatedEvent> producerFactory(JsonMapper jsonMapper) {
+    ProducerFactory<String, DomainEvent> producerFactory(JsonMapper jsonMapper) {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
+        config.put(JacksonJsonSerializer.ADD_TYPE_INFO_HEADERS, true);
+        config.put(JacksonJsonSerializer.TYPE_MAPPINGS, "trip_created:io.allitov.buber.common.event.TripCreatedEvent");
 
         return new DefaultKafkaProducerFactory<>(
                 config, new StringSerializer(), new JacksonJsonSerializer<>(jsonMapper));
     }
 
     @Bean
-    KafkaTemplate<String, TripCreatedEvent> kafkaTemplate(ProducerFactory<String, TripCreatedEvent> producerFactory) {
+    KafkaTemplate<String, DomainEvent> kafkaTemplate(ProducerFactory<String, DomainEvent> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }

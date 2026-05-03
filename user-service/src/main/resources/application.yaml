@@ -27,6 +27,8 @@ spring:
       database: 0
   kafka:
     bootstrap-servers: localhost:9092
+    consumer:
+      group-id: user-service-group
 
 logging:
   level:

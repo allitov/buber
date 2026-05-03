@@ -1,5 +1,6 @@
 package io.allitov.buber.trip.core.service;
 
+import io.allitov.buber.common.event.DomainEvent;
 import io.allitov.buber.common.event.TripCreatedEvent;
 import io.allitov.buber.trip.core.model.Trip;
 import java.time.Instant;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class TripEventSender {
 
-    private final KafkaTemplate<String, TripCreatedEvent> kafkaTemplate;
+    private final KafkaTemplate<String, DomainEvent> kafkaTemplate;
 
     @Value("${app.event.topic.trip-created-events}")
     private String tripCreatedTopic;
