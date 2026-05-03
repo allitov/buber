@@ -23,6 +23,8 @@ public class TripService {
 
     private final UserServiceClient userServiceClient;
 
+    private final TripEventSender tripEventSender;
+
     /**
      * Получить информацию о поездке по уникальному идентификатору.
      *
@@ -42,19 +44,24 @@ public class TripService {
      *
      * @param trip информация, которую нужно сохранить.
      * @return уникальный идентификатор сохраненной поездки.
+     * @implNote отправляет событие о создании заявки на поездку в очередь.
      */
     public Long saveTrip(Trip trip) {
         userServiceClient.isPassengerExists(trip.passengerId());
 
         // Для простоты считаем стоимость поездки рандомно.
         // По-хорошему нужно вычислять расстояние от одной точки до другой и умножать на коэффициент.
-        // Однако для этого видится разработка еще одного сервиса.
+        // Однако для этого видится разработка еще одного сервиса. А пока как повезет.
         long randomPrice = ThreadLocalRandom.current().nextLong(10000, 100000);
 
         Trip tripToSave =
                 trip.toBuilder().status(TripStatus.CREATED).price(randomPrice).build();
+        Long tripId = tripRepository.save(tripToSave);
+        Trip savedTrip = tripToSave.toBuilder().id(tripId).build();
 
-        return tripRepository.save(tripToSave);
+        tripEventSender.sendTripCreatedEvent(savedTrip);
+
+        return tripId;
     }
 
     /**

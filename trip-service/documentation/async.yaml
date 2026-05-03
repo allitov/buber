@@ -1,0 +1,59 @@
+asyncapi: 3.0.0
+info:
+  title: Kafka Trip Service
+  description: Протокол сообщений для Kafka в Trip Service.
+  version: 1.0.0
+servers:
+  kafkaDevelop:
+    host: localhost:9092
+    description: стенд для разработки.
+    protocol: kafka
+channels:
+  trip-created-events:
+    title: trip-created-events
+    address: trip-created-events
+    description: Топик для отправки информации о создании заявки на поездку.
+    messages:
+      TripCreatedEvent:
+        $ref: '#/components/messages/TripCreatedEvent'
+    servers:
+      - $ref: '#/servers/kafkaDevelop'
+operations:
+  sendTripCreated:
+    action: send
+    channel:
+      $ref: '#/channels/trip-created-events'
+    summary: Отправка уведомления о том, что заявка на поездку создана.
+components:
+  messages:
+    TripCreatedEvent:
+      name: TripCreatedEvent
+      description: Информация по заявке на поездку.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TripCreatedEvent'
+  schemas:
+    TripCreatedEvent:
+      type: object
+      description: DTO для отправки информации по созданной заявке на поездку.
+      properties:
+        tripId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
+        passengerId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор водителя.
+        origin:
+          type: string
+          maxLength: 255
+          description: Адрес отправления.
+        destination:
+          type: string
+          maxLength: 255
+          description: Адрес назначения.
+        price:
+          type: integer
+          format: int64
+          description: Стоимость поездки в копейках.

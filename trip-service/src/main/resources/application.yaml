@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/buber
+    url: jdbc:postgresql://localhost:5432/buber?currentSchema=trip_service
     username: buber
     password: buber
     hikari:
@@ -25,6 +25,8 @@ spring:
       host: localhost
       port: 6379
       database: 1
+  kafka:
+    bootstrap-servers: localhost:9092
 
 logging:
   level:
@@ -36,6 +38,9 @@ app:
     default-ttl: 60m
     config:
       trips: 30s
+  event:
+    topic:
+      trip-created-events: "trip-created-events"
 
 client:
   user-service:
