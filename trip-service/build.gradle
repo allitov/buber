@@ -7,6 +7,9 @@ dependencies {
     implementation libs.springBootStarterAop
 
     // data base
+    implementation libs.springBootStarterFlyway
+    runtimeOnly libs.flywayPostgresql
+
     implementation libs.springBootStarterJdbc
 
     runtimeOnly libs.postgreSQL

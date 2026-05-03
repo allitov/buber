@@ -5,15 +5,21 @@ server:
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/user_service
-    username: user_service
-    password: user_service
+    url: jdbc:postgresql://localhost:5432/buber
+    username: buber
+    password: buber
     hikari:
       maximum-pool-size: 10
       minimum-idle: 1
       connection-timeout: 5000
       idle-timeout: 60000
       validation-timeout: 500
+  flyway:
+    enabled: true
+    default-schema: user_service
+    schemas: user_service
+    create-schemas: true
+    locations: classpath:database/migrations
   data:
     redis:
       host: localhost

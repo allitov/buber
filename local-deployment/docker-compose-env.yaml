@@ -1,15 +1,15 @@
-name: user-service-db
+name: buber-project-env
 
 services:
   postgres:
-    container_name: users-db
+    container_name: buber-postgres
     image: postgres:16
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_PASSWORD: user_service
-      POSTGRES_USER: user_service
-      POSTGRES_DB: user_service
+      POSTGRES_PASSWORD: buber
+      POSTGRES_USER: buber
+      POSTGRES_DB: buber
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U user_service -d user_service" ]
       interval: 10s
@@ -18,27 +18,10 @@ services:
       start_period: 10s
     restart: unless-stopped
     networks:
-      - user-service-local
-
-  flyway:
-    container_name: users-flyway
-    image: flyway/flyway:12
-    command: [ "-connectRetries=60", "migrate" ]
-    environment:
-      FLYWAY_URL: jdbc:postgresql://postgres:5432/user_service
-      FLYWAY_USER: user_service
-      FLYWAY_PASSWORD: user_service
-      FLYWAY_SCHEMAS: user_service
-      FLYWAY_LOCATION: filesystem:/flyway/sql/main
-    volumes:
-      - ./migrations:/flyway/sql/main
-    depends_on:
-      - postgres
-    networks:
-      - user-service-local
+      - buber-project-local
 
   redis:
-    container_name: user-redis
+    container_name: buber-redis
     image: redis:8.6
     ports:
       - "6379:6379"
@@ -49,10 +32,10 @@ services:
       retries: 5
       start_period: 10s
     networks:
-      - user-service-local
+      - buber-project-local
 
   kafka:
-    container_name: user-kafka
+    container_name: buber-kafka
     image: apache/kafka:4.2.0
     ports:
       - "9092:9092"
@@ -70,7 +53,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_NUM_PARTITIONS: 3
     networks:
-      - user-service-local
+      - buber-project-local
 
 networks:
-  user-service-local:
+  buber-project-local:
