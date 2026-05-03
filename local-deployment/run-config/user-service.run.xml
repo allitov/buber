@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="user-service" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="buber-project.user-service.main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="io.allitov.buber.UserApplication" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="io.allitov.buber.user.UserApplication" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="io.allitov.buber.*" />
