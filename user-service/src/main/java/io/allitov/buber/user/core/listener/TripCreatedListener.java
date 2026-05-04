@@ -1,6 +1,7 @@
 package io.allitov.buber.user.core.listener;
 
 import io.allitov.buber.common.event.TripCreatedEvent;
+import io.allitov.buber.user.core.exception.EntityNotFoundException;
 import io.allitov.buber.user.core.service.DriverService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,11 @@ public class TripCreatedListener {
     public void handleTripCreatedEvent(TripCreatedEvent tripCreatedEvent) {
         log.info("Received trip-created event {}.", tripCreatedEvent);
 
-        // todo: добавить вызов бизнес логики.
+        try {
+            driverService.assignDriver(tripCreatedEvent.tripId());
+        } catch (EntityNotFoundException _) {
+            // Падать нельзя, если не получилось найти водителя.
+            log.warn("Driver for trip with id='{}' was not found.", tripCreatedEvent.tripId());
+        }
     }
 }

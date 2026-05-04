@@ -1,19 +1,14 @@
 package io.allitov.buber.user.core.service;
 
-import io.allitov.buber.common.event.DomainEvent;
-import io.allitov.buber.common.event.DriverAvailableEvent;
 import io.allitov.buber.user.core.exception.AlreadyExistsException;
 import io.allitov.buber.user.core.exception.EntityNotFoundException;
 import io.allitov.buber.user.core.model.Driver;
 import io.allitov.buber.user.core.model.DriverStatus;
 import io.allitov.buber.user.core.repository.DriverRepository;
-import java.time.Instant;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +16,14 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Сервисный класс для работы со сущностью {@link Driver}.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DriverService {
 
     private final DriverRepository driverRepository;
 
-    private final KafkaTemplate<String, DomainEvent> kafkaTemplate;
-
-    @Value("${app.event.topic.driver-status-events}")
-    private String driverStatusTopic;
+    private final DriverEventSender driverEventSender;
 
     /**
      * Получить информацию о водителе по уникальному идентификатору.
@@ -70,21 +63,30 @@ public class DriverService {
      *
      * @param id        уникальный идентификатор водителя.
      * @param newStatus новый статус водителя.
-     * @implNote Отправляет событие в очередь сообщений о доступности водителя,
-     * если новый статус {@code DriverStatus.AVAILABLE}.
      */
     @CacheEvict(value = "drivers", key = "#id")
     public void updateDriverStatus(Long id, DriverStatus newStatus) {
         driverRepository.updateStatusById(id, newStatus);
-        DriverAvailableEvent event = DriverAvailableEvent.builder()
-                .eventId(UUID.randomUUID())
-                .timestamp(Instant.now())
-                .driverId(id)
-                .updatedAt(Instant.now())
-                .build();
+    }
 
-        if (newStatus == DriverStatus.AVAILABLE) {
-            kafkaTemplate.send(driverStatusTopic, event.routingKey(), event);
-        }
+    /**
+     * Назначить водителя на поездку.
+     *
+     * @param tripId Уникальный идентификатор поездки.
+     * @throws EntityNotFoundException если не получилось найти свободного водителя.
+     * @implNote отправляет событие в очередь сообщений об успешном назначении водителя.
+     */
+    @Transactional
+    public void assignDriver(Long tripId) {
+        // Тут нужно понимать, что водителя можно назначить, если немного подождать.
+        // Сейчас сразу падаем и не назначаем водителя для простоты.
+        Driver foundDriver = driverRepository
+                .findAvailableDriverForUpdate()
+                .orElseThrow(() -> new EntityNotFoundException("Driver with status 'AVAILABLE' not found."));
+        driverRepository.updateStatusById(foundDriver.id(), DriverStatus.BUSY);
+
+        driverEventSender.sendDriverAssignedEvent(foundDriver.id(), tripId);
+
+        log.info("Driver with id='{}' assigned to trip with id='{}'.", foundDriver.id(), tripId);
     }
 }

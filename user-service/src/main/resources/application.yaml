@@ -43,5 +43,5 @@ app:
       drivers: 30s
   event:
     topic:
-      driver-status-events: "driver-status-events"
+      driver-assigned-events: "driver-assigned-events"
       trip-created-events: "trip-created-events"

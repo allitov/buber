@@ -9,33 +9,53 @@ servers:
     description: стенд для разработки.
     protocol: kafka
 channels:
-  driver-status-events:
-    title: driver-status-events
-    address: driver-status-events
-    description: Топик для отправки информации о доступности водителя в Trip Service.
+  driver-assigned-events:
+    title: driver-assigned-events
+    address: driver-assigned-events
+    description: Топик для отправки информации о назначении водителя на поездку.
     messages:
-      DriverAvailableEvent:
-        $ref: '#/components/messages/DriverAvailableEvent'
+      DriverAssignedEvent:
+        $ref: '#/components/messages/DriverAssignedEvent'
+    servers:
+      - $ref: '#/servers/kafkaDevelop'
+  trip-created-events:
+    title: trip-created-events
+    address: trip-created-events
+    description: Топик для чтения информации о создании заявки на поездку.
+    messages:
+      TripCreatedEvent:
+        $ref: '#/components/messages/TripCreatedEvent'
     servers:
       - $ref: '#/servers/kafkaDevelop'
 operations:
   sendDriverAvailable:
     action: send
     channel:
-      $ref: '#/channels/driver-status-events'
-    summary: Отправка уведомления о том, что водитель стал доступен.
+      $ref: '#/channels/driver-assigned-events'
+    summary: Отправка уведомления о том, что водитель назначен на поездку.
+  receiveTripCreated:
+    action: receive
+    channel:
+      $ref: '#/channels/trip-created-events'
+    summary: Получить уведомления о том, что заявка на поездку создана.
 components:
   messages:
-    DriverAvailableEvent:
-      name: DriverAvailableEvent
-      description: Информация по доступному водителю.
+    DriverAssignedEvent:
+      name: DriverAssignedEvent
+      description: Информация по назначенному водителю.
       contentType: application/json
       payload:
-        $ref: '#/components/schemas/DriverAvaiableEvent'
+        $ref: '#/components/schemas/DriverAssignedEvent'
+    TripCreatedEvent:
+      name: TripCreatedEvent
+      description: Информация по заявке на поездку.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/TripCreatedEvent'
   schemas:
-    DriverAvaiableEvent:
+    DriverAssignedEvent:
       type: object
-      description: DTO для отправки информации по доступному водителю.
+      description: DTO для отправки информации по назначенному водителю.
       properties:
         eventId:
           type: string
@@ -49,11 +69,39 @@ components:
           type: integer
           format: int64
           description: Уникальный идентификатор водителя.
-        updatedAt:
+        tripId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
+    TripCreatedEvent:
+      type: object
+      description: DTO для получения информации по созданной заявке на поездку.
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события.
+        timestamp:
           type: string
           format: date-time
-          description: Время смены статуса водителя.
-      required:
-        - driverId
-        - updatedAt
-
+          description: Время создания события.
+        tripId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
+        passengerId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор водителя.
+        origin:
+          type: string
+          maxLength: 255
+          description: Адрес отправления.
+        destination:
+          type: string
+          maxLength: 255
+          description: Адрес назначения.
+        price:
+          type: integer
+          format: int64
+          description: Стоимость поездки в копейках.
