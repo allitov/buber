@@ -3,6 +3,8 @@ ext {
 }
 
 dependencies {
+    implementation project(':common')
+
     // dev
     implementation libs.springBootStarterAop
 

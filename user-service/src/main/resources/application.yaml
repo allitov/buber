@@ -27,6 +27,8 @@ spring:
       database: 0
   kafka:
     bootstrap-servers: localhost:9092
+    consumer:
+      group-id: user-service-group
 
 logging:
   level:
@@ -41,4 +43,5 @@ app:
       drivers: 30s
   event:
     topic:
-      driver-status-events: "driver-status-events"
+      driver-assigned-events: "driver-assigned-events"
+      trip-created-events: "trip-created-events"

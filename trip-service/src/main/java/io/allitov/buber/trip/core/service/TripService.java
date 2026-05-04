@@ -8,13 +8,16 @@ import io.allitov.buber.trip.core.repository.TripRepository;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Сервис для работы со сущностью {@link Trip}.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TripService {
@@ -83,5 +86,29 @@ public class TripService {
     @CacheEvict(value = "trips", key = "#tripId")
     public void updateTripStatus(Long tripId, TripStatus newStatus) {
         tripRepository.updateStatusById(tripId, newStatus);
+    }
+
+    /**
+     * Назначить водителя на поездку и изменить ее статус на {@code ACCEPTED}.
+     *
+     * @param tripId   уникальный идентификатор поездки.
+     * @param driverId уникальный идентификатор водителя.
+     * @throws EntityNotFoundException если поездка не была найдена.
+     */
+    @CacheEvict(value = "trips", key = "#tripId")
+    @Transactional
+    public void acceptTrip(Long tripId, Long driverId) {
+        Trip foundTrip = tripRepository
+                .findById(tripId)
+                .orElseThrow(() -> new EntityNotFoundException("Trip with id='%d' not found.".formatted(tripId)));
+
+        if (foundTrip.status() != TripStatus.CREATED) {
+            log.warn("Trip with id='{}' is already in status='{}'.", tripId, foundTrip.status());
+            return;
+        }
+
+        tripRepository.updateDriverAndStatusById(tripId, driverId, TripStatus.ACCEPTED);
+
+        log.info("Trip with id='{}' has been accepted by driver with id='{}'", tripId, driverId);
     }
 }

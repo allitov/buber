@@ -20,7 +20,7 @@ public interface DriverRepository {
      * Получить информацию о водителе по уникальному идентификатору.
      *
      * @param id уникальный идентификатор водителя.
-     * @return {@link Driver}.
+     * @return {@link Optional} с информацией о водителе, если такой существует; иначе пустой {@link Optional}.
      */
     @SqlQuery("select * from driver where id = :id;")
     Optional<Driver> findById(@Bind("id") Long id);
@@ -54,4 +54,13 @@ public interface DriverRepository {
      */
     @SqlQuery("select exists(select 1 from driver where phone = :phone or license_number = :licenseNumber);")
     boolean existsByPhoneOrLicenseNumber(@Bind("phone") String phone, @Bind("licenseNumber") String licenseNumber);
+
+    /**
+     * Найти водителя со статусом {@code AVAILABLE}.
+     *
+     * @return {@link Optional} с информацией о водителе, если такой найден; иначе пустой {@link Optional}.
+     * @implNote блокирует возвращаемую запись для записи и чтения.
+     */
+    @SqlQuery("select * from driver where status = 'AVAILABLE' limit 1 for update;")
+    Optional<Driver> findAvailableDriverForUpdate();
 }

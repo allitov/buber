@@ -18,12 +18,26 @@ channels:
         $ref: '#/components/messages/TripCreatedEvent'
     servers:
       - $ref: '#/servers/kafkaDevelop'
+  driver-assigned-events:
+    title: driver-assigned-events
+    address: driver-assigned-events
+    description: Топик для получения информации о назначении водителя на поездку.
+    messages:
+      DriverAssignedEvent:
+        $ref: '#/components/messages/DriverAssignedEvent'
+    servers:
+      - $ref: '#/servers/kafkaDevelop'
 operations:
   sendTripCreated:
     action: send
     channel:
       $ref: '#/channels/trip-created-events'
     summary: Отправка уведомления о том, что заявка на поездку создана.
+  receiveDriverAssigned:
+    action: receive
+    channel:
+      $ref: '#/channels/driver-assigned-events'
+    summary: Получить уведомление о том, что водитель назначен на поездку.
 components:
   messages:
     TripCreatedEvent:
@@ -32,11 +46,25 @@ components:
       contentType: application/json
       payload:
         $ref: '#/components/schemas/TripCreatedEvent'
+    DriverAssignedEvent:
+      name: DriverAssignedEvent
+      description: Информация по назначенному водителю.
+      contentType: application/json
+      payload:
+        $ref: '#/components/schemas/DriverAssignedEvent'
   schemas:
     TripCreatedEvent:
       type: object
       description: DTO для отправки информации по созданной заявке на поездку.
       properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события.
+        timestamp:
+          type: string
+          format: date-time
+          description: Время создания события.
         tripId:
           type: integer
           format: int64
@@ -57,3 +85,23 @@ components:
           type: integer
           format: int64
           description: Стоимость поездки в копейках.
+    DriverAssignedEvent:
+      type: object
+      description: DTO для получения информации по назначенному водителю.
+      properties:
+        eventId:
+          type: string
+          format: uuid
+          description: Уникальный идентификатор события.
+        timestamp:
+          type: string
+          format: date-time
+          description: Время создания события.
+        driverId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор водителя.
+        tripId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
