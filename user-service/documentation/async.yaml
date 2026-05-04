@@ -28,7 +28,7 @@ channels:
     servers:
       - $ref: '#/servers/kafkaDevelop'
 operations:
-  sendDriverAvailable:
+  sendDriverAssigned:
     action: send
     channel:
       $ref: '#/channels/driver-assigned-events'
@@ -37,7 +37,7 @@ operations:
     action: receive
     channel:
       $ref: '#/channels/trip-created-events'
-    summary: Получить уведомления о том, что заявка на поездку создана.
+    summary: Получить уведомление о том, что заявка на поездку создана.
 components:
   messages:
     DriverAssignedEvent:

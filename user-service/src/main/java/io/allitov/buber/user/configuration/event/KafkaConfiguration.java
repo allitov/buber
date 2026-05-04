@@ -41,6 +41,9 @@ public class KafkaConfiguration {
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JacksonJsonSerializer.class);
         config.put(JacksonJsonSerializer.ADD_TYPE_INFO_HEADERS, true);
+        config.put(
+                JacksonJsonSerializer.TYPE_MAPPINGS,
+                "driver_assigned:io.allitov.buber.common.event.DriverAssignedEvent");
 
         return new DefaultKafkaProducerFactory<>(
                 config, new StringSerializer(), new JacksonJsonSerializer<>(jsonMapper));

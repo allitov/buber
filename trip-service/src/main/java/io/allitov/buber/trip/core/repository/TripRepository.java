@@ -55,4 +55,15 @@ public interface TripRepository {
      */
     @SqlUpdate("update trip set status = :newStatus where id = :id;")
     void updateStatusById(@Bind("id") Long id, @Bind("newStatus") TripStatus newStatus);
+
+    /**
+     * Обновить водителя и статус у поездки.
+     *
+     * @param id        уникальный идентификатор поездки.
+     * @param driverId  уникальный идентификатор водителя.
+     * @param newStatus новый статус поездки.
+     */
+    @SqlUpdate("update trip set driver_id = :driverId, status = :newStatus where id = :id;")
+    void updateDriverAndStatusById(
+            @Bind("id") Long id, @Bind("driverId") Long driverId, @Bind("newStatus") TripStatus newStatus);
 }
