@@ -1,0 +1,133 @@
+openapi: 3.1.0
+info:
+  title: Notification Service API
+  description: Сервис для асинхронного уведомления водителей и пассажиров об изменениях статуса поездки.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8082
+    description: локальный сервер
+paths:
+  /api/v1/notifications:
+    post:
+      tags:
+        - Уведомления
+      summary: Добавить уведомление в очередь на отправку.
+      operationId: createNotification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationRequest'
+      responses:
+        201:
+          description: Уведомление добавлено в очередь на отправку.
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      tags:
+        - Уведомления
+      summary: Получить список уведомлений по конкретной поездке.
+      operationId: getTripNotifications
+      parameters:
+        - name: tripId
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Уникальный идентификатор поездки.
+      responses:
+        200:
+          description: Информация успешно найдена.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationResponse'
+        400:
+          description: Некорректные значения параметров.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Ошибка со стороны сервера.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    NotificationRequest:
+      type: object
+      required: [tripId, recipientType, recipientId, message]
+      description: Данные об уведомлении для отправки пользователю.
+      properties:
+        tripId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор поездки.
+        recipientType:
+          type: string
+          enum: [DRIVER, PASSENGER]
+          description: Тип получателя (водитель, пассажир).
+        recipientId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор получателя.
+        message:
+          type: string
+          minLength: 1
+          maxLength: 255
+          description: Содержимое уведомления.
+
+    NotificationResponse:
+      type: object
+      description: Информация об уведомлении.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор задачи.
+        recipientType:
+          type: string
+          enum: [DRIVER, PASSENGER]
+          description: Тип получателя (водитель, пассажир).
+        recipientId:
+          type: integer
+          format: int64
+          description: Уникальный идентификатор получателя.
+        message:
+          type: string
+          maxLength: 255
+          description: Содержимое уведомления.
+        status:
+          type: string
+          enum: [PENDING, SENT, FAILED]
+          description: Состояние выполнения задачи.
+
+    Error:
+      type: object
+      description: Сущность с описанием ошибки.
+      properties:
+        code:
+          type: integer
+          format: int32
+          description: Код ошибки.
+        message:
+          type: string
+          description: Информация об ошибке.
