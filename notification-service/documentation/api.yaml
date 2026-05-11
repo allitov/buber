@@ -117,7 +117,7 @@ components:
           description: Содержимое уведомления.
         status:
           type: string
-          enum: [PENDING, SENT, FAILED]
+          enum: [PENDING, SENT, RETRY, FAILED]
           description: Состояние выполнения задачи.
 
     Error:

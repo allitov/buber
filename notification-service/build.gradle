@@ -1,0 +1,25 @@
+dependencies {
+    // dev
+    implementation libs.springBootStarterAop
+
+    // data base
+    implementation libs.springBootStarterFlyway
+    runtimeOnly libs.flywayPostgresql
+
+    implementation libs.springBootStarterJdbc
+
+    runtimeOnly libs.postgreSQL
+
+    implementation libs.jdbiCore
+    implementation libs.jdbiSqlobject
+    implementation libs.jdbiSpring
+    implementation libs.jdbiPostgres
+
+    // web
+    implementation libs.springBootStarterWeb
+    implementation libs.springBootStarterValidation
+
+    // mapping
+    implementation libs.mapstruct
+    annotationProcessor libs.mapstrcutProcessor
+}
